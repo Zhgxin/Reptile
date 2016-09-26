@@ -1,0 +1,41 @@
+# -*- coding:utf-8 -*-
+from baike_spider import html_parser
+from baike_spider import html_downloader
+class HtmlOutputer(object):
+    def __init__(self):
+        self.datas = []
+    def collect_data(self,data):
+        if data is None:
+            return
+        self.datas.append(data)
+
+
+    def output_html(self):
+        fout = open('output.html','w')
+        fout.write('<html>')
+        fout.write('<head>')
+        fout.write('<meta charset="UTF-8">')
+        fout.write('</head>')
+        fout.write('<body>')
+        fout.write('<table>')
+        for data in self.datas:
+            fout.write('<tr>')
+            fout.write('<td>%s</td>' % data['url'])
+            fout.write('<td>%s</td>' % data['title'].encode('utf-8'))
+            fout.write('<td>%s</td>' % data['summary'].encode('utf-8'))
+            fout.write('</tr>')
+        fout.write('</table>')
+        fout.write('</body>')
+        fout.write('</html>')
+
+        fout.close()
+
+if __name__ == "__main__":
+    u = "http://baike.baidu.com/view/21087.htm"
+    d = html_downloader.HtmlDownloader()
+    p = html_parser.HtmlParser()
+    h = d.download(u)
+    new,data = p.parser(u,h)
+    r = HtmlOutputer()
+    r.collect_data(data)
+    r.output_html()
